@@ -2,13 +2,12 @@
 
 namespace KodiCMS\Pages\Providers;
 
-use Block;
 use KodiCMS\Pages\Model\Page;
 use KodiCMS\Support\ServiceProvider;
-use KodiCMS\Support\Facades\Frontpage;
+use KodiCMS\Pages\Facades\Frontpage;
 use KodiCMS\Pages\Observers\PageObserver;
 use KodiCMS\Pages\Observers\PagePartObserver;
-use KodiCMS\Support\Facades\Block as BlockFacade;
+use KodiCMS\Pages\Facades\Block as BlockFacade;
 use KodiCMS\Pages\Model\PagePart as PagePartModel;
 use KodiCMS\Pages\Console\Commands\RebuildLayoutBlocksCommand;
 
@@ -22,9 +21,6 @@ class ModuleServiceProvider extends ServiceProvider
         PagePartModel::observe(new PagePartObserver);
     }
 
-    /**
-     *
-     */
     public function register()
     {
         $this->registerAliases([
