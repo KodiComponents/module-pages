@@ -28,20 +28,20 @@ class PageWysiwygController extends TemplateController
         $this->templateScripts['PAGE'] = $frontendPage;
 
         Meta::addMeta([
-                'name'    => 'page-id',
-                'data-id' => $id,
-                'name'    => 'csrf-token',
-                'content' => csrf_token(),
-            ])
-            ->loadPackage(['page-wysiwyg'], true)
-            ->addToGroup('site-url', '<script type="text/javascript">'.$this->getTemplateScriptsAsString().'</script>');
+            'name'    => 'page-id',
+            'data-id' => $id,
+            'name'    => 'csrf-token',
+            'content' => csrf_token(),
+        ])
+        ->loadPackage(['page-wysiwyg'], true)
+        ->addToGroup('site-url', '<script type="text/javascript">'.$this->getTemplateScriptsAsString().'</script>');
 
         app()->singleton('frontpage', function () use ($frontendPage) {
             return $frontendPage;
         });
 
-        app()->singleton('layout.widgets', function () use ($frontendPage) {
-            return new PageWidgetCollection($frontendPage->getId());
+        app()->singleton('layout.widgets', function ($app) use ($frontendPage) {
+            return new PageWidgetCollection($app['widget.manager'], $frontendPage->getId());
         });
 
         app()->singleton('layout.block', function () use ($frontendPage) {
