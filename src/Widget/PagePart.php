@@ -5,9 +5,9 @@ namespace KodiCMS\Pages\Widget;
 use KodiCMS\Widgets\Contracts\WidgetRenderable;
 use KodiCMS\Widgets\Helpers\ViewPHP;
 use KodiCMS\Widgets\Traits\WidgetRender;
-use KodiCMS\Widgets\Widget\Decorator;
+use KodiCMS\Widgets\Widget\WidgetAbstract;
 
-class PagePart extends Decorator implements WidgetRenderable
+class PagePart extends WidgetAbstract implements WidgetRenderable
 {
     use WidgetRender;
 

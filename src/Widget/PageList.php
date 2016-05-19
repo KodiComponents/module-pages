@@ -7,12 +7,12 @@ use KodiCMS\Pages\Model\PageSitemap;
 use KodiCMS\Widgets\Contracts\WidgetCacheable;
 use KodiCMS\Widgets\Contracts\WidgetPaginator as WidgetPaginatorInterface;
 use KodiCMS\Widgets\Traits\WidgetCache;
-use KodiCMS\Widgets\Widget\Decorator;
+use KodiCMS\Widgets\Widget\WidgetAbstract;
 use KodiCMS\Widgets\Traits\WidgetPaginator;
 use Frontpage;
 use Request;
 
-class PageList extends Decorator implements WidgetCacheable, WidgetPaginatorInterface
+class PageList extends WidgetAbstract implements WidgetCacheable, WidgetPaginatorInterface
 {
     use WidgetCache, WidgetPaginator;
 

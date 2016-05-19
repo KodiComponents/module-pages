@@ -6,10 +6,10 @@ use KodiCMS\Pages\Model\FrontendPage;
 use KodiCMS\Pages\Model\PageSitemap;
 use KodiCMS\Widgets\Contracts\WidgetCacheable;
 use KodiCMS\Widgets\Traits\WidgetCache;
-use KodiCMS\Widgets\Widget\Decorator;
+use KodiCMS\Widgets\Widget\WidgetAbstract;
 use Frontpage;
 
-class PageMenu extends Decorator implements WidgetCacheable
+class PageMenu extends WidgetAbstract implements WidgetCacheable
 {
     use WidgetCache;
 

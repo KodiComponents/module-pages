@@ -5,11 +5,11 @@ namespace KodiCMS\Pages\Widget;
 use KodiCMS\Pages\Model\PageSitemap;
 use KodiCMS\Widgets\Contracts\WidgetCacheable;
 use KodiCMS\Widgets\Traits\WidgetCache;
-use KodiCMS\Widgets\Widget\Decorator;
+use KodiCMS\Widgets\Widget\WidgetAbstract;
 use KodiCMS\CMS\Breadcrumbs\Collection as Breadcrumbs;
 use Frontpage;
 
-class PageBreadcrumbs extends Decorator implements WidgetCacheable
+class PageBreadcrumbs extends WidgetAbstract implements WidgetCacheable
 {
     use WidgetCache;
 
