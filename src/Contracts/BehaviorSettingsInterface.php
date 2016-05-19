@@ -2,7 +2,10 @@
 
 namespace KodiCMS\Pages\Contracts;
 
-interface BehaviorSettingsInterface
+use Illuminate\Contracts\Support\Arrayable;
+use KodiCMS\CMS\Contracts\SettingsInterface;
+
+interface BehaviorSettingsInterface extends Arrayable, SettingsInterface
 {
     /**
      * @return string|null

@@ -2,10 +2,11 @@
 
 namespace KodiCMS\Pages\Helpers;
 
+use KodiCMS\Pages\Contracts\BlockInterface;
 use KodiCMS\Widgets\Collection\WidgetCollection;
 use KodiCMS\Widgets\Engine\WidgetRenderHTML;
 
-class Block
+class Block implements BlockInterface
 {
     /**
      * @var WidgetCollection

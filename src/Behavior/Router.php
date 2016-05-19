@@ -2,7 +2,9 @@
 
 namespace KodiCMS\Pages\Behavior;
 
-class Router
+use KodiCMS\Pages\Contracts\BehaviorRouterInterface;
+
+class Router implements BehaviorRouterInterface
 {
     // Matches a URI group and captures the contents
     const REGEX_GROUP = '\(((?:(?>[^()]+)|(?R))*)\)';

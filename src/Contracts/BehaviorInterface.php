@@ -2,6 +2,8 @@
 
 namespace KodiCMS\Pages\Contracts;
 
+use KodiCMS\Pages\Model\FrontendPage;
+
 interface BehaviorInterface
 {
     /**
@@ -15,7 +17,7 @@ interface BehaviorInterface
     public function routeList();
 
     /**
-     * @return Router
+     * @return BehaviorRouterInterface
      */
     public function getRouter();
 
@@ -27,7 +29,7 @@ interface BehaviorInterface
     public function executeRoute($uri);
 
     /**
-     * @return Settings
+     * @return BehaviorSettingsInterface
      */
     public function getSettings();
 
