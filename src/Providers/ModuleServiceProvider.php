@@ -19,13 +19,15 @@ class ModuleServiceProvider extends ServiceProvider
 
         Page::observe(new PageObserver);
         PagePartModel::observe(new PagePartObserver);
+
+        $this->registerNavigation();
     }
 
     public function register()
     {
         $this->registerAliases([
             'Frontpage' => Frontpage::class,
-            'Block'     => BlockFacade::class,
+            'Block' => BlockFacade::class,
         ]);
 
         $this->registerProviders([
@@ -34,5 +36,30 @@ class ModuleServiceProvider extends ServiceProvider
         ]);
 
         $this->registerConsoleCommand(RebuildLayoutBlocksCommand::class);
+    }
+
+    protected function registerNavigation()
+    {
+        \Navigation::setFromArray([
+            [
+                'id' => 'pages',
+                'title' => 'pages::core.title.pages.list',
+                'url' => route('backend.page.list'),
+                'permissions' => 'page.index',
+                'priority' => 100,
+                'icon' => 'sitemap',
+            ],
+        ]);
+
+        if ($page = \Navigation::getPages()->findById('design')) {
+            $page->addPage([
+                'id' => 'layouts',
+                'title' => 'pages::core.title.layouts.list',
+                'url' => route('backend.layout.list'),
+                'permissions' => 'layout.index',
+                'priority' => 100,
+                'icon' => 'desktop',
+            ]);
+        }
     }
 }
