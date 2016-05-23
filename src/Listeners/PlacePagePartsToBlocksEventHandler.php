@@ -25,7 +25,7 @@ class PlacePagePartsToBlocksEventHandler
                     continue;
                 }
 
-                $partWidget = new PagePartWidget($part['name']);
+                $partWidget = new PagePartWidget(app('widget.manager'), $part['name']);
                 $partWidget->setContent($part['content_html']);
                 Block::addWidget($partWidget, $block);
             }
