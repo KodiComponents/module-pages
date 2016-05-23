@@ -13,11 +13,6 @@ use KodiCMS\CMS\Http\Controllers\System\TemplateController;
 class PageWysiwygController extends TemplateController
 {
     /**
-     * @var bool
-     */
-    protected $authRequired = true;
-
-    /**
      * @param int $id
      *
      * @return string
