@@ -30,7 +30,7 @@
 		</li>
 		@endif
 
-		@yield('page-tab')
+		@stack('page-tab')
 	</ul>
 </div>
 
@@ -57,7 +57,7 @@
 <hr class="no-margin-vr" />
 <div class="tab-content no-padding-vr">
 	<div class="tab-pane active" id="page-content-panel">
-		@yield('page-content')
+		@stack('page-content')
 		<div class="panel-body">
 			{!! $page->getPublicLink() !!}
 			<div class="text-right">
@@ -94,7 +94,7 @@
 	</div>
 	@endif
 
-	@yield('page-tab-content')
+	@stack('page-tab-content')
 </div>
 
 <div class="form-actions panel-footer">

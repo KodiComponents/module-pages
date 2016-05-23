@@ -1,5 +1,4 @@
-@section('page-content')
-
+@push('page-content')
 	@include('pages::parts.part')
 
 	<div id="pageEditParts"></div>
@@ -12,6 +11,4 @@
 		]) !!}
 	</div>
 	@endif
-
-	@parent
-@endsection
+@endpush

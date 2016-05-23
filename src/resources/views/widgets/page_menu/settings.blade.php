@@ -1,4 +1,4 @@
-@section('scripts')
+@push('scripts')
 	@parent
 	<script type="text/javascript">
 		$(function() {
@@ -15,7 +15,7 @@
 			($select.val() == 0) ? $cont .show() : $cont.hide();
 		}
 	</script>
-@stop
+@endpush
 
 <div class="panel-body">
 	<div class="form-group">
