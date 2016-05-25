@@ -63,14 +63,14 @@
 			<div class="text-right">
 				@if (!is_null($creator))
 					{!! UI::label(trans('pages::core.label.page.created_by', [
-					'anchor' => link_to_route('backend.user.edit', $creator->username, [$creator]),
+					'anchor' => link_to_route('backend.user.edit', $creator->name, [$creator]),
 					'date' => $page->created_at
 					]), 'important') !!}
 				@endif
 
 				@if (!is_null($updator))
 					{!! UI::label(trans('pages::core.label.page.updated_by', [
-					'anchor' => link_to_route('backend.user.edit', $updator->username, [$updator]),
+					'anchor' => link_to_route('backend.user.edit', $updator->name, [$updator]),
 					'date' => $page->updated_at
 					]), 'important') !!}
 				@endif
