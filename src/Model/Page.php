@@ -277,7 +277,7 @@ class Page extends Model implements BehaviorPageInterface
      */
     public function hasBehavior()
     {
-        return ! is_null($this->behavior);
+        return ! is_null($this->getBehavior());
     }
 
     /**
@@ -285,7 +285,7 @@ class Page extends Model implements BehaviorPageInterface
      */
     public function getBehaviorTitle()
     {
-        return studly_case($this->behavior);
+        return studly_case($this->getBehavior());
     }
 
     /**
@@ -298,7 +298,7 @@ class Page extends Model implements BehaviorPageInterface
             return;
         }
 
-        return BehaviorManager::load($this->behavior);
+        return BehaviorManager::load($this->getBehavior());
     }
 
     /**
@@ -488,5 +488,13 @@ class Page extends Model implements BehaviorPageInterface
         }
 
         return static::$loadedUsers[$this->{$filed}] = $this->belongsTo(User::class, $filed);
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getBehavior()
+    {
+        return $this->behavior;
     }
 }

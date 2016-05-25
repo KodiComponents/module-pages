@@ -2,26 +2,25 @@
 
 namespace KodiCMS\Pages\Model;
 
-use DB;
 use Cache;
-use KodiCMS\Assets\Contracts\MetaDataInterface;
-use Request;
 use Carbon\Carbon;
-use KodiCMS\Users\Model\User;
-use KodiCMS\Support\Helpers\Mime;
-use KodiCMS\Support\Helpers\Text;
+use DB;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Contracts\Support\Jsonable;
-use Illuminate\Contracts\Support\Arrayable;
-use KodiCMS\Pages\Contracts\BehaviorPageInterface;
 use KodiCMS\CMS\Breadcrumbs\Collection as Breadcrumbs;
 use KodiCMS\Pages\Behavior\Manager as BehaviorManager;
+use KodiCMS\Pages\Contracts\BehaviorInterface;
+use KodiCMS\Pages\Contracts\FrontendPageInterface;
+use KodiCMS\Support\Helpers\Mime;
+use KodiCMS\Support\Helpers\Text;
+use KodiCMS\Users\Model\User;
+use Request;
 
-class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDataInterface
+class FrontendPage implements FrontendPageInterface
 {
-    const STATUS_DRAFT = 1;
+
+    const STATUS_DRAFT     = 1;
     const STATUS_PUBLISHED = 100;
-    const STATUS_HIDDEN = 101;
+    const STATUS_HIDDEN    = 101;
 
     /**
      * @var array
@@ -29,30 +28,37 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     private static $pagesCache = [];
 
     /**
-     * @param string        $field
-     * @param mixed         $value
-     * @param FrontendPage  $parentPage
+     * @param string $field
+     * @param mixed $value
+     * @param FrontendPageInterface $parentPage
      * @param bool|array $includeHidden
      *
-     * @return bool|FrontendPage
+     * @return bool|FrontendPageInterface
      */
-    public static function findByField($field, $value, FrontendPage $parentPage = null, $includeHidden = true)
+    public static function findByField($field, $value, FrontendPageInterface $parentPage = null, $includeHidden = true)
     {
-        $pageCacheId = static::getCacheId([$field, $value, $includeHidden ? 'TRUE' : 'FALSE'], $parentPage);
+        $pageCacheId = static::getCacheId([
+            $field,
+            $value,
+            $includeHidden
+                ? 'TRUE'
+                : 'FALSE',
+        ], $parentPage);
 
         if (isset(static::$pagesCache[$pageCacheId])) {
             return static::$pagesCache[$pageCacheId];
         }
 
-        $query = DB::table('pages')->where('pages.'.$field, $value)
-            ->whereIn('status', static::getStatuses($includeHidden));
+        $query = DB::table('pages')
+                   ->where('pages.'.$field, $value)
+                   ->whereIn('status', static::getStatuses($includeHidden));
 
         if (config('pages::checkDate') === true) {
             $query->where('published_at', '<=', DB::raw('NOW()'));
         }
 
         if (! is_null($parentPage)) {
-            $query->where('parent_id', $parentPage->id);
+            $query->where('parent_id', $parentPage->getId());
         }
 
         // TODO: добавить кеширование на основе тегов
@@ -78,13 +84,13 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     }
 
     /**
-     * @param string        $uri
+     * @param string $uri
      * @param bool|array $includeHidden
-     * @param FrontendPage  $parentPage
+     * @param FrontendPageInterface $parentPage
      *
-     * @return stdClass
+     * @return FrontendPageInterface
      */
-    public static function findByUri($uri, FrontendPage $parentPage = null, $includeHidden = true)
+    public static function findByUri($uri, FrontendPageInterface $parentPage = null, $includeHidden = true)
     {
         $uri = trim($uri, '/');
 
@@ -96,7 +102,7 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
 
         $url = '';
 
-        $pageObject = new \stdClass;
+        $pageObject     = new \stdClass;
         $pageObject->id = 0;
 
         foreach ($urls as $pageSlug) {
@@ -122,22 +128,22 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     }
 
     /**
-     * @param string        $slug
-     * @param FrontendPage  $parentPage
+     * @param string $slug
+     * @param FrontendPageInterface $parentPage
      * @param bool|array $includeHidden
      *
-     * @return bool|FrontendPage
+     * @return bool|FrontendPageInterface
      */
-    public static function findBySlug($slug, FrontendPage $parentPage = null, $includeHidden = true)
+    public static function findBySlug($slug, FrontendPageInterface $parentPage = null, $includeHidden = true)
     {
         return self::findByField('slug', $slug, $parentPage, $includeHidden);
     }
 
     /**
-     * @param int           $id
+     * @param int $id
      * @param bool|array $includeHidden
      *
-     * @return bool|FrontendPage
+     * @return bool|FrontendPageInterface
      */
     public static function findById($id, $includeHidden = true)
     {
@@ -158,8 +164,8 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
         $uriSlugs = array_merge([''], preg_split('/\//', $uri, -1, PREG_SPLIT_NO_EMPTY));
 
         $slugs = DB::table('pages')
-            ->select('id', 'slug')
-            ->whereIn('status_id', config('pages.similar.find_in_statuses', []));
+                   ->select('id', 'slug')
+                   ->whereIn('status_id', config('pages.similar.find_in_statuses', []));
 
         if (config('pages.check_date')) {
             $slugs->where('published_at', '<=', DB::raw('NOW()'));
@@ -177,8 +183,8 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
             $similarPages = Text::similarWord($slug, $slugs);
 
             if (! empty($similarPages)) {
-                $pageId = key($similarPages);
-                $page = static::findById($pageId);
+                $pageId     = key($similarPages);
+                $page       = static::findById($pageId);
                 $newSlugs[] = $page->getSlug();
             }
         }
@@ -191,16 +197,18 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
 
         $page = static::find($uri);
 
-        return $page ? $uri : false;
+        return $page
+            ? $uri
+            : false;
     }
 
     /**
-     * @param string       $slug
-     * @param FrontendPage $parentPage
+     * @param string $slug
+     * @param FrontendPageInterface $parentPage
      *
      * @return string
      */
-    final protected static function getCacheId($slug, FrontendPage $parentPage = null)
+    final protected static function getCacheId($slug, FrontendPageInterface $parentPage = null)
     {
         if (is_array($slug)) {
             $slug = implode('::', $slug);
@@ -363,10 +371,10 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     protected $metaParams = [];
 
     /**
-     * @param \stdClass    $pageData
-     * @param FrontendPage $parentPage
+     * @param \stdClass $pageData
+     * @param FrontendPageInterface $parentPage
      */
-    public function __construct($pageData, FrontendPage $parentPage = null)
+    public function __construct($pageData, FrontendPageInterface $parentPage = null)
     {
         if (! is_null($parentPage)) {
             $this->setParentPage($parentPage);
@@ -382,11 +390,11 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     }
 
     /**
-     * @param FrontendPage $parentPage
+     * @param FrontendPageInterface $parentPage
      *
      * @return $this
      */
-    public function setParentPage(FrontendPage $parentPage = null)
+    public function setParentPage(FrontendPageInterface $parentPage = null)
     {
         if (! is_null($parentPage)) {
             $this->parentPage = $parentPage;
@@ -463,27 +471,31 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     }
 
     /**
-     * @param null $default
+     * @param string $default
      *
-     * @return null|string
+     * @return string
      */
     public function getMetaKeywords($default = null)
     {
         $meta = $this->parseMeta('meta_keywords');
 
-        return ! empty($meta) ? $meta : $default;
+        return ! empty($meta)
+            ? $meta
+            : $default;
     }
 
     /**
-     * @param null $default
+     * @param string $default
      *
-     * @return null|string
+     * @return string
      */
     public function getMetaDescription($default = null)
     {
         $meta = $this->parseMeta('meta_description');
 
-        return ! empty($meta) ? $meta : $default;
+        return ! empty($meta)
+            ? $meta
+            : $default;
     }
 
     /**
@@ -581,9 +593,9 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     }
 
     /**
-     * @param null|intger $level
+     * @param null|integer $level
      *
-     * @return FrontendPage|null
+     * @return FrontendPageInterface|null
      */
     public function getParent($level = null)
     {
@@ -628,7 +640,7 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     public function getLevel()
     {
         if ($this->level === null) {
-            $uri = $this->getUri();
+            $uri         = $this->getUri();
             $this->level = empty($uri)
                 ? 0
                 : substr_count($uri, '/') + 1;
@@ -646,7 +658,7 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     }
 
     /**
-     * @return Behavior
+     * @return BehaviorInterface
      */
     public function getBehaviorObject()
     {
@@ -658,7 +670,15 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
      */
     public function hasBehavior()
     {
-        return ! empty($this->behavior);
+        return ! empty($this->getBehavior());
+    }
+
+    /**
+     * @return string
+     */
+    public function getBehaviorTitle()
+    {
+        return studly_case($this->getBehavior());
     }
 
     /**
@@ -668,13 +688,15 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     {
         $mime = Mime::byFilename($this->getUri());
 
-        return $mime === false ? 'text/html' : $mime;
+        return $mime === false
+            ? 'text/html'
+            : $mime;
     }
 
     /**
      * @param null|string $label
-     * @param array|null  $attributes
-     * @param bool        $checkCurrent
+     * @param array|null $attributes
+     * @param bool $checkCurrent
      *
      * @return string
      */
@@ -715,8 +737,8 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
 
     /**
      * @param string|array $key
-     * @param null|string  $value
-     * @param null|string  $field
+     * @param null|string $value
+     * @param null|string $field
      *
      * @return $this
      */
@@ -745,7 +767,7 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
 
     /**
      * @param string $key
-     * @param mixed  $default
+     * @param mixed $default
      *
      * @return $this
      */
@@ -786,7 +808,7 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
 
         if ($found) {
             $fields = array_unique($fields[1]);
-            $parts = [];
+            $parts  = [];
 
             foreach ($fields as $i => $field) {
                 $patterns[] = '/(?<!\\{)\\{'.preg_quote($field, '/').'\\}(?!\\})/u';
@@ -798,21 +820,21 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
                         break;
                     case '..': // Parent page
                         if ($this->getParent() instanceof self) {
-                            $method = 'get'.ucfirst($key);
+                            $method  = 'get'.ucfirst($key);
                             $parts[] = $this->getParent()->{$method}();
                         }
                         break;
                     default: // Level
                         if (is_numeric($field) and $this->getLevel() != $field and $this->getParent($field) instanceof self) {
-                            $method = 'get'.ucfirst($key);
+                            $method  = 'get'.ucfirst($key);
                             $parts[] = $this->getParent($field)->{$method}();
                         }
                         break;
                 }
 
-                $param = null;
+                $param     = null;
                 $metaParam = null;
-                $default = null;
+                $default   = null;
 
                 if (strpos($field, '|') !== false) {
                     list($field, $default) = explode('|', $field, 2);
@@ -856,8 +878,8 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     public function childrenCount($includeHidden = false)
     {
         $query = Page::where('parent_id', $this->getId())
-            ->whereIn('status', static::getStatuses($includeHidden))
-            ->orderBy('position', 'desc');
+                     ->whereIn('status', static::getStatuses($includeHidden))
+                     ->orderBy('position', 'desc');
 
         if (filter_var(config('pages.check_date'), FILTER_VALIDATE_BOOLEAN)) {
             $query->whereRaw('published_at <= NOW()');
@@ -889,8 +911,8 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     public function getChildrenQuery($includeHidden = false)
     {
         $query = Page::where('parent_id', $this->getId())
-            ->whereIn('status', static::getStatuses($includeHidden))
-            ->orderBy('position', 'desc');
+                     ->whereIn('status', static::getStatuses($includeHidden))
+                     ->orderBy('position', 'desc');
 
         if (filter_var(config('pages.check_date'), FILTER_VALIDATE_BOOLEAN)) {
             $query->whereRaw('published_at <= NOW()');
@@ -906,7 +928,9 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     {
         $settings = PageBehaviorSettings::where('page_id', $this->getId())->first();
 
-        return is_null($settings) ? [] : $settings->settings;
+        return is_null($settings)
+            ? []
+            : $settings->settings;
     }
 
     /**
@@ -920,7 +944,7 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     }
 
     /**
-     * @param int     $level
+     * @param int $level
      * @param Breadcrumbs $crumbs
      */
     private function recurseBreadcrumbs($level, Breadcrumbs &$crumbs)
@@ -946,18 +970,18 @@ class FrontendPage implements BehaviorPageInterface, Arrayable, Jsonable, MetaDa
     public function toArray()
     {
         return [
-            'id'               => $this->getId(),
-            'parent_id'        => $this->getParentId(),
-            'status'           => $this->status,
-            'slug'             => $this->getSlug(),
-            'title'            => $this->getTitle(),
-            'breadcrumb'       => $this->getBreadcrumb(),
-            'meta_title'       => $this->getMetaTitle(),
-            'meta_keywords'    => $this->getMetaKeywords(),
+            'id' => $this->getId(),
+            'parent_id' => $this->getParentId(),
+            'status' => $this->status,
+            'slug' => $this->getSlug(),
+            'title' => $this->getTitle(),
+            'breadcrumb' => $this->getBreadcrumb(),
+            'meta_title' => $this->getMetaTitle(),
+            'meta_keywords' => $this->getMetaKeywords(),
             'meta_description' => $this->getMetaDescription(),
-            'robots'           => $this->getMetaRobots(),
-            'layout_file'      => $this->getLayout(),
-            'position'         => $this->position,
+            'robots' => $this->getMetaRobots(),
+            'layout_file' => $this->getLayout(),
+            'position' => $this->position,
         ];
     }
 
