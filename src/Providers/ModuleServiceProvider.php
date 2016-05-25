@@ -19,8 +19,6 @@ class ModuleServiceProvider extends ServiceProvider
 
         Page::observe(new PageObserver);
         PagePartModel::observe(new PagePartObserver);
-
-        $this->registerNavigation();
     }
 
     public function register()
@@ -38,7 +36,7 @@ class ModuleServiceProvider extends ServiceProvider
         $this->registerConsoleCommand(RebuildLayoutBlocksCommand::class);
     }
 
-    protected function registerNavigation()
+    public function contextBackend()
     {
         \Navigation::setFromArray([
             [
