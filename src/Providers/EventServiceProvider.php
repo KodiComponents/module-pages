@@ -2,15 +2,29 @@
 
 namespace KodiCMS\Pages\Providers;
 
-use WYSIWYG;
-use KodiCMS\Pages\Model\FrontendPage;
-use KodiCMS\Pages\Behavior\Manager as BehaviorManager;
-use KodiCMS\Pages\Listeners\PlacePagePartsToBlocksEventHandler;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as BaseEventServiceProvider;
+use KodiCMS\Pages\Behavior\Manager as BehaviorManager;
+use WYSIWYG;
 
 class EventServiceProvider extends BaseEventServiceProvider
 {
+
+    /**
+     * The event handler mappings for the application.
+     *
+     * @var array
+     */
+    protected $listen = [
+        \KodiCMS\Pages\Events\FrontPageNotFound::class => [],
+        \KodiCMS\Pages\Events\FrontPageRequested::class => [],
+        \KodiCMS\Pages\Events\FrontPageFound::class => [
+            7000 => \KodiCMS\Pages\Listeners\PlacePagePartsToBlocksEventHandler::class,
+            8000 => \KodiCMS\Pages\Listeners\PopulateFrontPageMetadataToLayout::class,
+            9999 => \KodiCMS\Pages\Listeners\RegisterFrontPageSingleton::class
+        ],
+    ];
+
     /**
      * Register any other events for your application.
      *
@@ -30,17 +44,5 @@ class EventServiceProvider extends BaseEventServiceProvider
             WYSIWYG::loadAllEditors();
             echo view('pages::parts.list')->with('page', $page);
         }, 999);
-
-        $events->listen('frontend.found', function ($page) {
-            $this->app->singleton('frontpage', function () use ($page) {
-                return $page;
-            });
-        }, 9999);
-
-        $events->listen('frontend.found', function (FrontendPage $page) {
-            app('assets.meta')->setMetaData($page);
-        }, 8000);
-
-        $events->listen('frontend.found', PlacePagePartsToBlocksEventHandler::class, 7000);
     }
 }
