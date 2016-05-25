@@ -19,10 +19,11 @@ class ModuleContainer extends BaseModuleContainer
         }
 
         Event::listen('routes.loaded', function () {
-            Route::get('{slug}', [
+            Route::get('{slug?}', [
                 'as'   => 'frontend.url',
+                'middleware' => ['context'],
                 'uses' => 'KodiCMS\Pages\Http\Controllers\FrontendController@run',
-            ])->where('slug', '(.*)?');
+            ])->where('slug', '.*');
         }, 999);
     }
 }

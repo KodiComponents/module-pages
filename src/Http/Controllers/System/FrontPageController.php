@@ -63,7 +63,7 @@ abstract class FrontPageController extends Controller
         }
 
         $html = $layout->render();
-        if (auth()->check() and auth()->user()->hasRole(['administrator', 'developer'])) {
+        if (!is_null($this->currentUser) and $this->currentUser->hasRole(['administrator', 'developer'])) {
             $injectHTML = (string) view('cms::app.partials.toolbar');
             // Insert system HTML before closed tag body
             $matches = preg_split('/(<\/body>)/i', $html, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
@@ -79,7 +79,7 @@ abstract class FrontPageController extends Controller
         $response->header('Content-Type', $mime);
 
         if (config('cms.show_response_sign', true)) {
-            $response->header('X-Powered-CMS', CMS::NAME.'/'.CMS::VERSION);
+            $response->header('X-Powered-CMS', CMS::getFullName());
         }
 
         $response->setContent($html);

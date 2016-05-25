@@ -62,7 +62,7 @@ class PageObserver
      */
     public function creating($page)
     {
-        if (! is_null($user = auth()->user())) {
+        if (! is_null($user = backend_auth()->user())) {
             $page->created_by_id = $user->id;
         }
     }
@@ -83,7 +83,7 @@ class PageObserver
      */
     public function updating($page)
     {
-        if (! is_null($user = auth()->user())) {
+        if (! is_null($user = backend_auth()->user())) {
             $page->updated_by_id = $user->id;
         }
     }
