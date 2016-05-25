@@ -2,11 +2,11 @@
 
 namespace KodiCMS\Pages\Repository;
 
-use KodiCMS\Pages\Model\Page;
-use KodiCMS\Pages\Model\PageSitemap;
-use KodiCMS\Pages\Model\FrontendPage;
 use Illuminate\Database\Query\Builder;
 use KodiCMS\CMS\Repository\BaseRepository;
+use KodiCMS\Pages\Model\FrontendPage;
+use KodiCMS\Pages\Model\Page;
+use KodiCMS\Pages\Model\PageSitemap;
 
 class PageRepository extends BaseRepository
 {
@@ -175,5 +175,25 @@ class PageRepository extends BaseRepository
         }
 
         return $pages->get();
+    }
+
+    /**
+     *
+     * @return Page
+     */
+    public function getRootPage()
+    {
+        $page = $this->model->find(1);
+
+        if (is_null($page)) {
+            $page = $this->instance();
+            $page->id = 1;
+            $page->title = 'Root';
+            $page->setIncrementing(false);
+
+            $page->save();
+        }
+
+        return $page;
     }
 }

@@ -26,7 +26,7 @@ class PageController extends BackendController
             return ['id' => $key, 'text' => $value];
         }, Page::getStatusList(), array_keys(Page::getStatusList()));
 
-        $page = $repository->findOrFail(1);
+        $page = $repository->getRootPage();
 
         $this->setContent('pages.index', compact('page'));
     }
