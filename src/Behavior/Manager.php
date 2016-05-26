@@ -2,7 +2,7 @@
 
 namespace KodiCMS\Pages\Behavior;
 
-use KodiCMS\Pages\Contracts\BehaviorInterface;
+use KodiCMS\Pages\Contracts\Behavior\BehaviorInterface;
 use KodiCMS\Pages\Exceptions\BehaviorException;
 
 class Manager

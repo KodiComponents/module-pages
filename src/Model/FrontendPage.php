@@ -8,7 +8,7 @@ use DB;
 use Illuminate\Database\Query\Builder;
 use KodiCMS\CMS\Breadcrumbs\Collection as Breadcrumbs;
 use KodiCMS\Pages\Behavior\Manager as BehaviorManager;
-use KodiCMS\Pages\Contracts\BehaviorInterface;
+use KodiCMS\Pages\Contracts\Behavior\BehaviorInterface;
 use KodiCMS\Pages\Contracts\FrontendPageInterface;
 use KodiCMS\Support\Helpers\Mime;
 use KodiCMS\Support\Helpers\Text;
@@ -356,7 +356,7 @@ class FrontendPage implements FrontendPageInterface
     protected $layout_file = null;
 
     /**
-     * @var Behavior
+     * @var BehaviorInterface
      */
     protected $behaviorObject = null;
 

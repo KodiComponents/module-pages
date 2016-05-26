@@ -1,13 +1,13 @@
 <?php
 
-namespace KodiCMS\Pages\Contracts;
+namespace KodiCMS\Pages\Contracts\Behavior;
 
-use KodiCMS\Pages\Model\FrontendPage;
+use KodiCMS\Pages\Contracts\FrontendPageInterface;
 
 interface BehaviorInterface
 {
     /**
-     * @return FrontendPage
+     * @return FrontendPageInterface
      */
     public function getPage();
 

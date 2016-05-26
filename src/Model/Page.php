@@ -289,7 +289,7 @@ class Page extends Model implements BehaviorPageInterface
     }
 
     /**
-     * @return null|\KodiCMS\Pages\Behavior\Decorator
+     * @return \KodiCMS\Pages\Contracts\Behavior\BehaviorInterface|void
      * @throws \KodiCMS\Pages\Exceptions\BehaviorException
      */
     public function getBehaviorObject()

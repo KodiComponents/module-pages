@@ -8,6 +8,7 @@ use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Database\Query\Builder;
 use KodiCMS\Assets\Contracts\MetaDataInterface;
 use KodiCMS\CMS\Breadcrumbs\Collection as Breadcrumbs;
+use KodiCMS\Pages\Contracts\Behavior\BehaviorPageInterface;
 use KodiCMS\Pages\Model\Layout;
 use KodiCMS\Users\Model\User;
 

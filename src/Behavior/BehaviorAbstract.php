@@ -2,11 +2,11 @@
 
 namespace KodiCMS\Pages\Behavior;
 
+use KodiCMS\Pages\Contracts\Behavior\BehaviorInterface;
+use KodiCMS\Pages\Contracts\Behavior\BehaviorPageInterface;
 use KodiCMS\Support\Helpers\Callback;
 use KodiCMS\Pages\Model\FrontendPage;
-use KodiCMS\Pages\Contracts\BehaviorInterface;
 use KodiCMS\Pages\Exceptions\BehaviorException;
-use KodiCMS\Pages\Contracts\BehaviorPageInterface;
 
 abstract class BehaviorAbstract implements BehaviorInterface
 {

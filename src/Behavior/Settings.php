@@ -2,9 +2,9 @@
 
 namespace KodiCMS\Pages\Behavior;
 
-use KodiCMS\Pages\Contracts\BehaviorInterface;
+use KodiCMS\Pages\Contracts\Behavior\BehaviorInterface;
+use KodiCMS\Pages\Contracts\Behavior\BehaviorSettingsInterface;
 use KodiCMS\Support\Traits\Settings as SettingsTrait;
-use KodiCMS\Pages\Contracts\BehaviorSettingsInterface;
 
 class Settings implements BehaviorSettingsInterface
 {
@@ -41,7 +41,5 @@ class Settings implements BehaviorSettingsInterface
                 'page'     => $this->behavior->getPage(),
             ])->render();
         }
-
-        return;
     }
 }

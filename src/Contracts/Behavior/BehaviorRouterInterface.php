@@ -1,6 +1,6 @@
 <?php
 
-namespace KodiCMS\Pages\Contracts;
+namespace KodiCMS\Pages\Contracts\Behavior;
 
 interface BehaviorRouterInterface
 {

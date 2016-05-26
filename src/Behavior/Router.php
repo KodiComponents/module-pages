@@ -2,7 +2,8 @@
 
 namespace KodiCMS\Pages\Behavior;
 
-use KodiCMS\Pages\Contracts\BehaviorRouterInterface;
+
+use KodiCMS\Pages\Contracts\Behavior\BehaviorRouterInterface;
 
 class Router implements BehaviorRouterInterface
 {
@@ -161,7 +162,10 @@ class Router implements BehaviorRouterInterface
      * Returns the compiled regular expression for the route. This translates
      * keys and optional groups to a proper PCRE regular expression.
      *
-     * @return  string
+     * @param string $uri
+     * @param array  $regex
+     *
+     * @return string
      * @uses    static::REGEX_ESCAPE
      * @uses    static::REGEX_SEGMENT
      */
