@@ -3,14 +3,14 @@
 namespace KodiCMS\Pages\Model;
 
 use DB;
-use UI;
-use KodiCMS\Users\Model\User;
-use KodiCMS\Support\Helpers\URL;
 use Illuminate\Database\Eloquent\Model;
-use KodiCMS\Support\Model\ModelFieldTrait;
-use KodiCMS\Pages\Contracts\BehaviorPageInterface;
 use KodiCMS\Pages\Behavior\Manager as BehaviorManager;
+use KodiCMS\Pages\Contracts\Behavior\BehaviorPageInterface;
 use KodiCMS\Pages\Model\FieldCollections\PageFieldCollection;
+use KodiCMS\Support\Helpers\URL;
+use KodiCMS\Support\Model\ModelFieldTrait;
+use KodiCMS\Users\Model\User;
+use UI;
 
 class Page extends Model implements BehaviorPageInterface
 {
@@ -33,9 +33,9 @@ class Page extends Model implements BehaviorPageInterface
     public static function getStatusList()
     {
         return [
-            FrontendPage::STATUS_DRAFT     => trans('pages::core.status.draft'),
+            FrontendPage::STATUS_DRAFT => trans('pages::core.status.draft'),
             FrontendPage::STATUS_PUBLISHED => trans('pages::core.status.published'),
-            FrontendPage::STATUS_HIDDEN    => trans('pages::core.status.hidden'),
+            FrontendPage::STATUS_HIDDEN => trans('pages::core.status.hidden'),
         ];
     }
 
@@ -45,6 +45,27 @@ class Page extends Model implements BehaviorPageInterface
      * @var string
      */
     protected $table = 'pages';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'title',
+        'slug',
+        'redirect_url',
+        'breadcrumb',
+        'meta_title',
+        'meta_keywords',
+        'meta_description',
+        'robots',
+        'parent_id',
+        'layout_file',
+        'behavior',
+        'status',
+        'published_at',
+    ];
 
     /**
      * The attributes that aren't mass assignable.
@@ -66,12 +87,12 @@ class Page extends Model implements BehaviorPageInterface
      * @var array
      */
     protected $casts = [
-        'parent_id'     => 'integer',
-        'status'        => 'integer',
+        'parent_id' => 'integer',
+        'status' => 'integer',
         'created_by_id' => 'integer',
         'updated_by_id' => 'integer',
-        'position'      => 'integer',
-        'is_redirect'   => 'boolean',
+        'position' => 'integer',
+        'is_redirect' => 'boolean',
     ];
 
     /**
@@ -95,6 +116,7 @@ class Page extends Model implements BehaviorPageInterface
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
+
         $this->addObservableEvents(['reordering', 'reordered']);
     }
 
@@ -128,9 +150,9 @@ class Page extends Model implements BehaviorPageInterface
     public function getRobotsList()
     {
         return [
-            'INDEX, FOLLOW'     => 'INDEX, FOLLOW',
-            'INDEX, NOFOLLOW'   => 'INDEX, NOFOLLOW',
-            'NOINDEX, FOLLOW'   => 'NOINDEX, FOLLOW',
+            'INDEX, FOLLOW' => 'INDEX, FOLLOW',
+            'INDEX, NOFOLLOW' => 'INDEX, NOFOLLOW',
+            'NOINDEX, FOLLOW' => 'NOINDEX, FOLLOW',
             'NOINDEX, NOFOLLOW' => 'NOINDEX, NOFOLLOW',
         ];
     }
@@ -194,13 +216,10 @@ class Page extends Model implements BehaviorPageInterface
      */
     public function getPublicLink()
     {
-        return link_to(
-            $this->getFrontendUrl(),
-            UI::label(UI::icon('globe').' '.trans('pages::core.button.view_front')), [
-                'class'  => 'item-preview',
-                'target' => '_blank',
-            ]
-        );
+        return link_to($this->getFrontendUrl(), UI::label(UI::icon('globe').' '.trans('pages::core.button.view_front')), [
+            'class' => 'item-preview',
+            'target' => '_blank',
+        ]);
     }
 
     /**
@@ -234,27 +253,18 @@ class Page extends Model implements BehaviorPageInterface
      */
     public function hasChildren()
     {
-        return (bool) DB::table($this->table)
-            ->selectRaw('COUNT(*) as total')
-            ->where('parent_id', $this->id)
-            ->value('total') > 0;
+        return (bool) DB::table($this->table)->selectRaw('COUNT(*) as total')->where('parent_id', $this->id)->value('total') > 0;
     }
 
     /**
      * @param string $keyword
-     *
-     * @return ORM
      */
     public function scopeSearchByKeyword($query, $keyword)
     {
         return $query->where(function ($subQuery) use ($keyword) {
             $keyword = e($keyword);
 
-            return $subQuery->orWhere(DB::raw('LOWER(title)'), 'like', "%{$keyword}%")
-                ->orWhere('slug', 'like', "%{$keyword}%")
-                ->orWhere('breadcrumb', 'like', "%{$keyword}%")
-                ->orWhere('meta_title', 'like', "%{$keyword}%")
-                ->orWhere('meta_keywords', 'like', "%{$keyword}%");
+            $subQuery->orWhere(DB::raw('LOWER(title)'), 'like', "%{$keyword}%")->orWhere('slug', 'like', "%{$keyword}%")->orWhere('breadcrumb', 'like', "%{$keyword}%")->orWhere('meta_title', 'like', "%{$keyword}%")->orWhere('meta_keywords', 'like', "%{$keyword}%");
         });
     }
 
@@ -265,11 +275,20 @@ class Page extends Model implements BehaviorPageInterface
     public function getSitemap()
     {
         $sitemap = PageSitemap::get(true);
+
         if ($this->exists) {
             $sitemap->exclude([$this->id]);
         }
 
         return $sitemap->selectChoices();
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getBehavior()
+    {
+        return $this->behavior;
     }
 
     /**
@@ -488,13 +507,5 @@ class Page extends Model implements BehaviorPageInterface
         }
 
         return static::$loadedUsers[$this->{$filed}] = $this->belongsTo(User::class, $filed);
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getBehavior()
-    {
-        return $this->behavior;
     }
 }

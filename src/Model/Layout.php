@@ -2,8 +2,8 @@
 
 namespace KodiCMS\Pages\Model;
 
-use DB;
 use Cache;
+use DB;
 use KodiCMS\CMS\Model\File;
 
 class Layout extends File
@@ -19,9 +19,7 @@ class Layout extends File
     public function getBlocks()
     {
         return Cache::remember($this->getCacheKey(), 120, function () {
-            return LayoutBlock::where('layout_name', $this->getName())
-                ->lists('block')
-                ->all();
+            return LayoutBlock::where('layout_name', $this->getName())->lists('block')->all();
         });
     }
 
@@ -30,9 +28,7 @@ class Layout extends File
      */
     public function isUsed()
     {
-        return (bool) DB::table('pages')
-            ->where('layout_file', $this->getName())
-            ->count();
+        return (bool) DB::table('pages')->where('layout_file', $this->getName())->count();
     }
 
     /**
@@ -73,8 +69,8 @@ class Layout extends File
 
         foreach ($blocks as $position => $block) {
             LayoutBlock::create([
-                'position'    => $position,
-                'block'       => $block,
+                'position' => $position,
+                'block' => $block,
                 'layout_name' => $this->getName(),
             ]);
         }

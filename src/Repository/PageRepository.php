@@ -2,7 +2,9 @@
 
 namespace KodiCMS\Pages\Repository;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Http\Request;
 use KodiCMS\CMS\Repository\BaseRepository;
 use KodiCMS\Pages\Model\FrontendPage;
 use KodiCMS\Pages\Model\Page;
@@ -19,50 +21,43 @@ class PageRepository extends BaseRepository
     }
 
     /**
-     * @param array $data
-     *
-     * @return bool
-     * @throws \KodiCMS\CMS\Exceptions\ValidationException
+     * @param Request $request
      */
-    public function validateOnCreate(array $data = [])
+    public function validateOnCreate(Request $request)
     {
-        $parent_id = (int) array_get($data, 'parent_id');
-        $validator = $this->validator($data, [
-            'title'  => 'required|max:32',
-            'slug'   => "max:100|unique:pages,slug,NULL,id,parent_id,{$parent_id}",
+        $parentId = (int) $request->get('parent_id');
+
+        $this->validate($request, [
+            'title' => 'required|max:32',
+            'slug' => "max:100|unique:pages,slug,NULL,id,parent_id,{$parentId}",
             'status' => 'required|numeric',
         ]);
-
-        return $this->_validate($validator);
     }
 
     /**
-     * @param int $id
-     * @param array   $data
-     *
-     * @return bool
-     * @throws \KodiCMS\CMS\Exceptions\ValidationException
+     * @param int     $id
+     * @param Request $request
      */
-    public function validateOnUpdate($id, array $data = [])
+    public function validateOnUpdate($id, Request $request)
     {
-        $parent_id = (int) array_get($data, 'parent_id');
+        $parentId = (int) $request->get('parent_id');
 
-        $validator = $this->validator($data, [
+        $validator = $this->getValidationFactory()->make($request->all(), [
             'title' => 'required|max:255',
-            'slug'  => "max:100|unique:pages,slug,{$id},id,parent_id,{$parent_id}",
+            'slug' => "max:100|unique:pages,slug,{$id},id,parent_id,{$parentId}",
         ]);
 
         $validator->sometimes('status', 'required|numeric', function ($input) use ($id) {
             return $id > 1;
         });
 
-        return $this->_validate($validator);
+        $this->validateWith($validator, $request);
     }
 
     /**
      * @param bool $includeHidden
      *
-     * @return \KodiCMS\Pages\Model\Sitemap
+     * @return \KodiCMS\Pages\Model\PageSitemap
      */
     public function getSitemap($includeHidden = false)
     {
@@ -87,31 +82,6 @@ class PageRepository extends BaseRepository
     }
 
     /**
-     * @param array $data
-     *
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    public function create(array $data = [])
-    {
-        return parent::create(array_only($data, [
-            'title',
-            'slug',
-            'is_redirect',
-            'breadcrumb',
-            'meta_title',
-            'meta_keywords',
-            'meta_description',
-            'robots',
-            'parent_id',
-            'layout_file',
-            'behavior',
-            'status',
-            'published_at',
-            'redirect_url',
-        ]));
-    }
-
-    /**
      * @param int   $id
      * @param array $data
      *
@@ -123,22 +93,7 @@ class PageRepository extends BaseRepository
             $data['is_redirect'] = 0;
         }
 
-        return parent::update($id, array_only($data, [
-            'title',
-            'slug',
-            'is_redirect',
-            'breadcrumb',
-            'meta_title',
-            'meta_keywords',
-            'meta_description',
-            'robots',
-            'parent_id',
-            'layout_file',
-            'behavior',
-            'status',
-            'published_at',
-            'redirect_url',
-        ]));
+        return parent::update($id, $data);
     }
 
     /**
@@ -154,35 +109,36 @@ class PageRepository extends BaseRepository
     /**
      * @param string $keyword
      *
-     * @return array
+     * @return Collection|Page[]
      */
     public function searchByKeyword($keyword)
     {
-        $pages = $this->model;
+        /** @var Page $query */
+        $query = $this->model->query();
 
         if (strlen($keyword) == 2 and $keyword[0] == '.') {
-            $page_status = [
+            $pageStatus = [
                 'd' => FrontendPage::STATUS_DRAFT,
                 'p' => FrontendPage::STATUS_PUBLISHED,
                 'h' => FrontendPage::STATUS_HIDDEN,
             ];
 
-            if (isset($page_status[$keyword[1]])) {
-                $pages->whereIn('status', $page_status[$keyword[1]]);
+            if (isset($pageStatus[$keyword[1]])) {
+                $query->whereIn('status', $pageStatus[$keyword[1]]);
             }
-        } else {
-            $pages = $pages->searchByKeyword($keyword);
+
+            return $query->get();
         }
 
-        return $pages->get();
+        return $query->searchByKeyword($keyword)->get();
     }
 
     /**
-     *
      * @return Page
      */
     public function getRootPage()
     {
+        /** @var Page $page */
         $page = $this->model->find(1);
 
         if (is_null($page)) {

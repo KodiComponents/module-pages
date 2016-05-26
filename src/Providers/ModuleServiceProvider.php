@@ -3,6 +3,7 @@
 namespace KodiCMS\Pages\Providers;
 
 use KodiCMS\Pages\Model\Page;
+use KodiCMS\Pages\Repository\PageRepository;
 use KodiCMS\Support\ServiceProvider;
 use KodiCMS\Pages\Facades\Frontpage;
 use KodiCMS\Pages\Observers\PageObserver;
@@ -38,15 +39,13 @@ class ModuleServiceProvider extends ServiceProvider
 
     public function contextBackend()
     {
-        \Navigation::setFromArray([
-            [
-                'id' => 'pages',
-                'title' => 'pages::core.title.pages.list',
-                'url' => route('backend.page.list'),
-                'permissions' => 'page.index',
-                'priority' => 100,
-                'icon' => 'sitemap',
-            ],
+        $root = \Navigation::addPage([
+            'id' => 'pages',
+            'title' => 'pages::core.title.pages.list',
+            'url' => route('backend.page.list'),
+            'permissions' => 'page.index',
+            'priority' => 100,
+            'icon' => 'sitemap',
         ]);
 
         if ($page = \Navigation::getPages()->findById('design')) {

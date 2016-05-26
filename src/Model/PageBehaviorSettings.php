@@ -47,7 +47,7 @@ class PageBehaviorSettings extends Model
      * @var array
      */
     protected $casts = [
-        'page_id'  => 'integer',
+        'page_id' => 'integer',
         'settings' => 'array',
     ];
 

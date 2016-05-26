@@ -3,13 +3,13 @@
 namespace KodiCMS\Pages\Http\Controllers\System;
 
 use CMS;
-use Illuminate\Http\Response;
-use KodiCMS\Pages\Helpers\Block;
 use Illuminate\Contracts\View\View;
-use KodiCMS\Pages\Model\LayoutCollection;
-use KodiCMS\Widgets\Collection\WidgetCollection;
+use Illuminate\Http\Response;
 use KodiCMS\CMS\Http\Controllers\System\Controller;
 use KodiCMS\Pages\Exceptions\LayoutNotFoundException;
+use KodiCMS\Pages\Helpers\Block;
+use KodiCMS\Pages\Model\LayoutCollection;
+use KodiCMS\Widgets\Collection\WidgetCollection;
 
 abstract class FrontPageController extends Controller
 {
@@ -25,6 +25,7 @@ abstract class FrontPageController extends Controller
     public function before()
     {
         $this->widgetCollection = $collection = new WidgetCollection;
+
         app()->singleton('layout.block', function ($app) use ($collection) {
             return new Block($collection);
         });
@@ -39,9 +40,7 @@ abstract class FrontPageController extends Controller
     protected function getLayoutFile($layout)
     {
         if (is_null($layout = (new LayoutCollection)->findFile($layout))) {
-            throw new LayoutNotFoundException(
-                trans('pages::core.messages.layout_not_set')
-            );
+            throw new LayoutNotFoundException(trans('pages::core.messages.layout_not_set'));
         }
 
         return $layout->toView();
@@ -57,22 +56,10 @@ abstract class FrontPageController extends Controller
     protected function render(View $layout = null, $mime = 'text\html')
     {
         if (is_null($layout)) {
-            throw new LayoutNotFoundException(
-                trans('pages::core.messages.layout_not_set')
-            );
+            throw new LayoutNotFoundException(trans('pages::core.messages.layout_not_set'));
         }
 
         $html = $layout->render();
-        if (!is_null($this->currentUser) and $this->currentUser->hasRole(['administrator', 'developer'])) {
-            $injectHTML = (string) view('cms::app.partials.toolbar');
-            // Insert system HTML before closed tag body
-            $matches = preg_split('/(<\/body>)/i', $html, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-
-            if (count($matches) > 1) {
-                /* assemble the HTML output back with the iframe code in it */
-                $html = $matches[0].$injectHTML.$matches[1].$matches[2];
-            }
-        }
 
         $response = new Response();
 
@@ -109,9 +96,7 @@ abstract class FrontPageController extends Controller
      */
     public function callAction($method, $parameters)
     {
-        if ($method != 'run') {
-            $this->before();
-        }
+        $this->before();
 
         $response = call_user_func_array([$this, $method], $parameters);
 

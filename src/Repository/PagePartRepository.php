@@ -2,8 +2,8 @@
 
 namespace KodiCMS\Pages\Repository;
 
-use KodiCMS\Pages\Model\PagePart;
 use KodiCMS\CMS\Repository\BaseRepository;
+use KodiCMS\Pages\Model\PagePart;
 
 class PagePartRepository extends BaseRepository
 {

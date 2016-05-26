@@ -46,11 +46,7 @@ class LayoutBlock extends Model
     {
         $content = str_replace(' ', '', $content);
 
-        return array_unique(
-            array_merge(
-                static::findInBladeTemplate($content), static::findInPHPTemplate($content)
-            )
-        );
+        return array_unique(array_merge(static::findInBladeTemplate($content), static::findInPHPTemplate($content)));
     }
 
     /**
@@ -84,9 +80,9 @@ class LayoutBlock extends Model
     public static function getDefaultBlocks()
     {
         return [
-            -1     => trans('widgets::core.label.remove_from_page'),
-            0      => trans('widgets::core.label.hide'),
-            'PRE'  => trans('widgets::core.label.before_page_render'),
+            -1 => trans('widgets::core.label.remove_from_page'),
+            0 => trans('widgets::core.label.hide'),
+            'PRE' => trans('widgets::core.label.before_page_render'),
             'POST' => trans('widgets::core.label.after_page_render'),
         ];
     }

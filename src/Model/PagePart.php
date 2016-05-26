@@ -18,6 +18,22 @@ class PagePart extends Model
     protected $table = 'page_parts';
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'page_id',
+        'name',
+        'wysiwyg',
+        'content',
+        'is_expanded',
+        'is_indexable',
+        'is_protected',
+        'position',
+    ];
+
+    /**
      * The attributes that aren't mass assignable.
      *
      * @var array
@@ -32,13 +48,16 @@ class PagePart extends Model
     protected $casts = [
         'is_developer' => 'boolean',
         'is_protected' => 'boolean',
-        'is_expanded'  => 'boolean',
+        'is_expanded' => 'boolean',
         'is_indexable' => 'boolean',
-        'position'     => 'integer',
-        'page_id'      => 'integer',
-        'name'         => 'string',
+        'position' => 'integer',
+        'page_id' => 'integer',
+        'name' => 'string',
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function page()
     {
         return $this->belongsTo(Page::class, 'page_id');

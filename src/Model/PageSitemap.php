@@ -2,8 +2,8 @@
 
 namespace KodiCMS\Pages\Model;
 
-use KodiCMS\Support\Helpers\URL;
 use KodiCMS\Support\Helpers\TreeCollection;
+use KodiCMS\Support\Helpers\URL;
 
 class PageSitemap
 {
@@ -18,7 +18,7 @@ class PageSitemap
      *
      * @param bool $includeHidden Включить скрытые страницы
      *
-     * @return Sitemap
+     * @return TreeCollection
      */
     public static function get($includeHidden = false)
     {
