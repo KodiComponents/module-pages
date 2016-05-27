@@ -13,9 +13,9 @@
 				<div class="btn-group">
 					@event('view.page.part.controls')
 					{!! Form::button(UI::icon('edit'), ['class' => 'part-rename btn btn-inverse btn-xs margin-r5']) !!}
-					@if (acl_check('page.parts'))
+
 					{!! Form::button(UI::icon('cog'), ['class' => 'part-options-button btn btn-default btn-xs margin-r10']) !!}
-					@endif
+
 					<% if ( is_expanded == 0 ) { %>
 					{!! Form::button(UI::icon('chevron-down'), ['class' => 'part-minimize-button btn btn-inverse btn-xs']) !!}
 					<% } else { %>
@@ -29,7 +29,7 @@
 		<% if ((is_protected == {{ PagePart::PART_PROTECTED }} && is_developer == 1) || is_protected == {{ PagePart::PART_NOT_PROTECTED }}) { %>
 		<div class="part-options" style="display: none;">
 			<div class="panel-body padding-sm form-inline">
-				@if (acl_check('page.parts'))
+				@if (acl_check('part::delete'))
 				<div class="row">
 					<div class="col-md-4 item-filter-cont">
 						<label>

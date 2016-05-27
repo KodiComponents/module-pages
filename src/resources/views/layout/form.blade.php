@@ -62,7 +62,7 @@
 	<div class="panel-default alert alert-danger alert-dark no-margin-b">
 		@lang('pages::layout.messages.layout_not_writeable')
 	</div>
-@elseif (acl_check('layout.edit'))
+@elseif (acl_check('layout::edit'))
 	<div class="form-actions panel-footer">
 		@include('cms::app.partials.actionButtons', ['route' => 'backend.layout.list'])
 	</div>

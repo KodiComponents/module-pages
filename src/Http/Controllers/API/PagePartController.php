@@ -51,7 +51,7 @@ class PagePartController extends Controller
      */
     public function reorder(PagePartRepository $repository)
     {
-        if (! acl_check('parts.reorder')) {
+        if (! acl_check('part::reorder')) {
             return;
         }
 

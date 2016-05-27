@@ -1,12 +1,12 @@
 <div id="page-tree" class="panel">
 	<div class="panel-heading">
-		@if (acl_check('page.add'))
+		@if (acl_check('page::add'))
 		{!! link_to_route('backend.page.create', trans('pages::core.button.add'), [], [
 			'class' => 'btn btn-default btn-labeled', 'data-icon' => 'plus', 'data-hotkeys' => 'ctrl+a'
 		]) !!}
 		@endif
 
-		@if (acl_check('page.sort'))
+		@if (acl_check('pag::reorder'))
 		{!! Form::button(trans('pages::core.button.reorder'), [
 			'class' => 'btn btn-primary btn-sm btn-labeled',
 			'data-icon' => 'sort',
@@ -38,7 +38,7 @@
 					{!! UI::icon('exclamation-triangle fa-fw text-warning', ['title' => trans('pages::core.messages.layout_not_set')]) !!}
 					@endif
 
-					@if (!acl_check('page.edit'))
+					@if (!acl_check('page::edit'))
 					{!! UI::icon('lock fa-fw') !!}
 					<em title="/">{{ $page->title }}</em>
 					@else
@@ -54,7 +54,7 @@
 					{!! $page->getPublicLink() !!}
 				</div>
 				<div class="actions col-xs-offset-4 col-xs-1 text-right">
-					@if (acl_check('page.create'))
+					@if (acl_check('page::create'))
 					{!! link_to_route('backend.page.create', '', [], [
 						'data-icon' => 'plus', 'class' => 'btn btn-default btn-xs'
 					]) !!}

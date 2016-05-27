@@ -1,13 +1,13 @@
 <div class="panel">
 	@if (!$collection->isReadOnly())
 	<div class="panel-heading">
-		@if (acl_check('layout.add'))
+		@if (acl_check('layout::add'))
 		{!! link_to_route('backend.layout.create', trans('pages::layout.button.add'), [], [
 			'class' => 'btn btn-default btn-labeled', 'data-icon' => 'plus', 'data-hotkeys' => 'ctrl+a'
 		]) !!}
 		@endif
 
-		@if ($collection->getTotal() > 0 and acl_check('layout.rebuild'))
+		@if ($collection->getTotal() > 0 and acl_check('layout::rebuild'))
 		<div class="panel-heading-controls">
 			{!! Form::button(trans('pages::layout.button.rebuild'), [
 			'data-icon' => 'refresh',
@@ -51,7 +51,7 @@
 				<span class="label label-warning">@lang('pages::layout.label.readonly')</span>
 				@endif
 
-				@if (acl_check('layout.edit') or acl_check('layout.view'))
+				@if (acl_check('layout::edit') or acl_check('layout::view'))
 				{!! link_to_route('backend.layout.edit', $layout->getName(), [$layout->getName()], [
 					'class' => $layout->isReadOnly() ? 'popup' : ''
 				]) !!}
@@ -70,7 +70,7 @@
 				{!! UI::label($layout->getRelativePath()) !!}
 			</td>
 			<td class="actions text-right">
-				@if (acl_check('layout.delete'))
+				@if (acl_check('layout::delete'))
 				{!! Form::open(['route' => ['backend.layout.delete', $layout->getName()]]) !!}
 					{!! Form::button('', [
 						'type' => 'submit',
