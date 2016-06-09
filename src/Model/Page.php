@@ -506,6 +506,6 @@ class Page extends Model implements BehaviorPageInterface
             return static::$loadedUsers[$this->{$filed}];
         }
 
-        return static::$loadedUsers[$this->{$filed}] = $this->belongsTo(User::class, $filed);
+        return static::$loadedUsers[$this->{$filed}] = $this->belongsTo(\CMS::userModel(), $filed);
     }
 }

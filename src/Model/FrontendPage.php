@@ -574,7 +574,7 @@ class FrontendPage implements FrontendPageInterface
     public function getCreatedBy()
     {
         if (is_null($this->created_by)) {
-            $this->created_by = User::findOrNew($this->created_by);
+            $this->created_by = \CMS::user()->findOrNew($this->created_by);
         }
 
         return $this->created_by;
@@ -586,7 +586,7 @@ class FrontendPage implements FrontendPageInterface
     public function getUpdatedBy()
     {
         if (is_null($this->updated_by)) {
-            $this->updated_by = User::findOrNew($this->created_by);
+            $this->updated_by = \CMS::user()->findOrNew($this->created_by);
         }
 
         return $this->updated_by;
