@@ -5,6 +5,16 @@ namespace KodiCMS\Pages\Model;
 use DB;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * KodiCMS\Pages\Model\LayoutBlock
+ *
+ * @property string $layout_name
+ * @property string $block
+ * @property integer $position
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\LayoutBlock whereLayoutName($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\LayoutBlock whereBlock($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\LayoutBlock wherePosition($value)
+ */
 class LayoutBlock extends Model
 {
     /**

@@ -12,6 +12,56 @@ use KodiCMS\Support\Model\ModelFieldTrait;
 use KodiCMS\Users\Model\User;
 use UI;
 
+/**
+ * KodiCMS\Pages\Model\Page
+ *
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $published_at
+ * @property integer $id
+ * @property integer $parent_id
+ * @property integer $status
+ * @property string $behavior
+ * @property string $title
+ * @property string $slug
+ * @property string $breadcrumb
+ * @property string $meta_title
+ * @property string $meta_keywords
+ * @property string $meta_description
+ * @property string $robots
+ * @property string $layout_file
+ * @property integer $created_by_id
+ * @property integer $updated_by_id
+ * @property integer $position
+ * @property boolean $is_redirect
+ * @property string $redirect_url
+ * @property-read \KodiCMS\Pages\Model\Page $parent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\KodiCMS\Pages\Model\Page[] $children
+ * @property-read \Illuminate\Database\Eloquent\Collection|\KodiCMS\Pages\Model\PagePart[] $parts
+ * @property-read \KodiCMS\Pages\Model\PageBehaviorSettings $behaviorSettings
+ * @property-read mixed $layout
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page wherePublishedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereParentId($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereBehavior($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereTitle($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereSlug($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereBreadcrumb($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereMetaTitle($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereMetaKeywords($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereMetaDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereRobots($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereLayoutFile($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereCreatedById($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereUpdatedById($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page wherePosition($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereIsRedirect($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page whereRedirectUrl($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\Page searchByKeyword($keyword)
+ */
 class Page extends Model implements BehaviorPageInterface
 {
     use ModelFieldTrait;
@@ -52,19 +102,8 @@ class Page extends Model implements BehaviorPageInterface
      * @var array
      */
     protected $fillable = [
-        'title',
-        'slug',
-        'redirect_url',
-        'breadcrumb',
-        'meta_title',
-        'meta_keywords',
-        'meta_description',
-        'robots',
-        'parent_id',
-        'layout_file',
-        'behavior',
-        'status',
-        'published_at',
+        'title', 'slug', 'redirect_url', 'breadcrumb', 'meta_title', 'meta_keywords', 'meta_description',
+        'robots', 'parent_id', 'layout_file', 'behavior', 'status', 'published_at',
     ];
 
     /**

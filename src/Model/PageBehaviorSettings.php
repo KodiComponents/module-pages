@@ -4,6 +4,15 @@ namespace KodiCMS\Pages\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * KodiCMS\Pages\Model\PageBehaviorSettings
+ *
+ * @property integer $page_id
+ * @property string $settings
+ * @property-read \KodiCMS\Pages\Model\Page $page
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\PageBehaviorSettings wherePageId($value)
+ * @method static \Illuminate\Database\Query\Builder|\KodiCMS\Pages\Model\PageBehaviorSettings whereSettings($value)
+ */
 class PageBehaviorSettings extends Model
 {
     /**
