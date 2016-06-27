@@ -34,6 +34,8 @@ class EventServiceProvider extends BaseEventServiceProvider
      */
     public function boot(DispatcherContract $events)
     {
+        parent::boot($events);
+        
         $events->listen('config.loaded', function () {
             BehaviorManager::init();
         });
