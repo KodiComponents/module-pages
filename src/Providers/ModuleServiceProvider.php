@@ -11,6 +11,7 @@ use KodiCMS\Pages\Observers\PageObserver;
 use KodiCMS\Pages\Observers\PagePartObserver;
 use KodiCMS\Support\ServiceProvider;
 use KodiCMS\Users\Model\Permission;
+use KodiCMS\Widgets\WidgetType;
 
 class ModuleServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,8 @@ class ModuleServiceProvider extends ServiceProvider
 
         Page::observe(new PageObserver);
         PagePartModel::observe(new PagePartObserver);
+
+        $this->registerWidgets();
     }
 
     public function register()
@@ -63,5 +66,13 @@ class ModuleServiceProvider extends ServiceProvider
                 'icon' => 'desktop',
             ]);
         }
+    }
+
+    private function registerWidgets()
+    {
+        $this->app['widget.manager']
+            ->registerWidget(new WidgetType('page.menu', 'pages::widgets.page_menu.title', 'KodiCMS\Pages\Widget\PageMenu', 'Page'))
+            ->registerWidget(new WidgetType('page.list', 'pages::widgets.page_list.title', 'KodiCMS\Pages\Widget\PageList', 'Page'))
+            ->registerWidget(new WidgetType('page.breadcrumbs', 'pages::widgets.page_breadcrumbs.title', 'KodiCMS\Pages\Widget\PageBreadcrumbs', 'Page'));
     }
 }
