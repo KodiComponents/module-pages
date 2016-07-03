@@ -19,9 +19,9 @@ class EventServiceProvider extends BaseEventServiceProvider
         \KodiCMS\Pages\Events\FrontPageNotFound::class => [],
         \KodiCMS\Pages\Events\FrontPageRequested::class => [],
         \KodiCMS\Pages\Events\FrontPageFound::class => [
-            7000 => \KodiCMS\Pages\Listeners\PlacePagePartsToBlocksEventHandler::class,
-            8000 => \KodiCMS\Pages\Listeners\PopulateFrontPageMetadataToLayout::class,
-            9999 => \KodiCMS\Pages\Listeners\RegisterFrontPageSingleton::class
+            100 => \KodiCMS\Pages\Listeners\PlacePagePartsToBlocksEventHandler::class,
+            200 => \KodiCMS\Pages\Listeners\PopulateFrontPageMetadataToLayout::class,
+            10000 => \KodiCMS\Pages\Listeners\RegisterFrontPageSingleton::class,
         ],
     ];
 
@@ -34,8 +34,12 @@ class EventServiceProvider extends BaseEventServiceProvider
      */
     public function boot(DispatcherContract $events)
     {
-        parent::boot($events);
-        
+        foreach ($this->listens() as $event => $listeners) {
+            foreach ($listeners as $priority => $listener) {
+                $events->listen($event, $listener, $priority);
+            }
+        }
+
         $events->listen('config.loaded', function () {
             BehaviorManager::init();
         });
